@@ -1,4 +1,4 @@
-**Please note:** This repository is not currently maintained, and is kept for historical purpose only.
+**Please note:** This is a fork of the js-marker-clusterer library, the original repository can be found here https://github.com/googlemaps/js-marker-clusterer
 
 Marker Clusterer – A Google Maps JavaScript API utility library
 ==============
