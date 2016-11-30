@@ -56,9 +56,6 @@ index.html
 
 [Examples page](https://googlemaps.github.io/js-marker-clusterer/docs/examples.html)
 
-## Contributing
-
-Want to contribute? Check out the [contributing guide](CONTRIBUTING.md)!
 
 ## License
 
