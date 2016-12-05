@@ -18,42 +18,41 @@ To use your own custom cluster images just name your images `m[1-5].png` or set 
 
 index.html
 
-    ...
+```
+<div id="map-container"><div id="map"></div></div>
+<script src="markerclusterer.js"></script>
+<script>
+    function initialize() {
+        var center = new google.maps.LatLng(51.5074, 0.1278);
 
-    <div id="map-container"><div id="map"></div></div>
-    <script src="markerclusterer.js"></script>
-    <script>
-        function initialize() {
-            var center = new google.maps.LatLng(51.5074, 0.1278);
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 3,
+          center: center,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        });
 
-            var map = new google.maps.Map(document.getElementById('map'), {
-              zoom: 3,
-              center: center,
-              mapTypeId: google.maps.MapTypeId.ROADMAP
-            });
+        var markers = [];
+        var marker = new google.maps.Marker({
+            position: new google.maps.LatLng(51.5074, 0.1278)
+        });
+        markers.push(marker);
 
-            var markers = [];
-            var marker = new google.maps.Marker({
-                position: new google.maps.LatLng(51.5074, 0.1278)
-            });
-            markers.push(marker);
+        var options = {
+            imagePath: 'images/m'
+        };
 
-            var options = {
-                imagePath: 'images/m'
-            };
+        var markerCluster = new MarkerClusterer(map, markers, options);
+    }
 
-            var markerCluster = new MarkerClusterer(map, markers, options);
-        }
+    google.maps.event.addDomListener(window, 'load', initialize);
+</script>
+```
 
-        google.maps.event.addDomListener(window, 'load', initialize);
-    </script>
-    ...
-    
 ### Custom CSS
 
-Customize the cluster pins by using the ´cssClass´-option.
+Customize the cluster pins by using the `cssClass`-option.
 
-#### Adding a custom CSS-Class ´custom-pin´ to the options:
+#### Adding a custom CSS-Class `custom-pin` to the options:
 
 ```
 var center = new google.maps.LatLng(37.4419, -122.1419),
