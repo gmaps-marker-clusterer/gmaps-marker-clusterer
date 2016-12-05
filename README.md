@@ -1,10 +1,11 @@
 **Please note:** This is a fork of the js-marker-clusterer library, the original repository can be found here https://github.com/googlemaps/js-marker-clusterer
 
+![Logo](https://cdn.rawgit.com/gmaps-marker-clusterer/gmaps-marker-clusterer/master/gmaps-marker-clusterer-logo.svg)
+
 Marker Clusterer – A Google Maps JavaScript API utility library
 ==============
 
 A Google Maps JavaScript API v3 library to create and manage per-zoom-level clusters for large amounts of markers.
-![Analytics](https://maps-ga-beacon.appspot.com/UA-12846745-20/js-marker-clusterer/readme?pixel)
 
 [Reference documentation](https://googlemaps.github.io/js-marker-clusterer/docs/reference.html)
 
