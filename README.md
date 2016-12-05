@@ -2,8 +2,9 @@
 
 ![Logo](https://cdn.rawgit.com/gmaps-marker-clusterer/gmaps-marker-clusterer/master/gmaps-marker-clusterer-logo.svg)
 
-Marker Clusterer – A Google Maps JavaScript API utility library
-==============
+# Gmaps Marker Clusterer
+
+**A JavaScript API utility library for Google Maps**
 
 A Google Maps JavaScript API v3 library to create and manage per-zoom-level clusters for large amounts of markers.
 
