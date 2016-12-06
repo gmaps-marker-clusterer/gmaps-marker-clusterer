@@ -1,236 +1,290 @@
 ---
 layout: default
 title: Home
-description: Simple documentation template for Github pages
+description: A JavaScript API utility library for Google Maps
 isHome: true
 ---
 
 <section class="bs-docs-section">
-  <h1 id="overview" class="page-header">Overview</h1>
-  
-  <blockquote>
-    This is a Jekyll template I use for my GitHub projects documentations. It is heavily based on official Bootstrap documentation and is designed to be quickly deployed.
-  </blockquote>
+	<h1 id="overview" class="page-header">Overview</h1>
 
-  <h3 id="features">Features</h3>
-
-  <ul>
-    <li>Responsive Bootstrap theme</li>
-    <li>Automatic syntax highlight</li>
-    <li>Multi-page</li>
-    <li>Automatic menu</li>
-    <li>Configurable additional links</li>
-    <li>Github counters</li>
-    <li>Twitter &amp; Facebook buttons</li>
-  </ul>
-  
-  <h3 id="examples">Examples</h3>
-  
-  <ul>
-    <li><a href="http://mistic100.github.io/jQuery-highlightTextarea/">jQuery highlightTextarea</a></li>
-    <li><a href="http://mistic100.github.io/angular-smilies">AngularJS Smilies</a></li>
-    <li><a href="http://mistic100.github.io/jQuery-QueryBuilder">jQuery QueryBuilder</a></li>
-    <li><a href="http://mistic100.github.io/Bootstrap-Confirmation/">Bootstrap Confirmation</a></li>
-  </ul>
+	<blockquote>
+		A Google Maps JavaScript API v3 library to create and manage per-zoom-level clusters for large amounts of markers.
+	</blockquote>
 </section>
 
 
 <section class="bs-docs-section">
-  <h1 id="installation" class="page-header">Installation</h1>
+	<h1 id="examples" class="page-header">Examples</h1>
 
-  <h2 id="install-jekyll">Install Jekyll</h2>
-  <p>Follow the <a href="https://help.github.com/articles/using-jekyll-with-pages">GitHub guide</a> to install Jekyll on your computer. The big steps are:</p>
+	<h2 id="example-simple">Simple Example</h2>
 
-{% highlight text %}
-apt-get install ruby ruby-dev
-gem install bundler
-git clone git://github.com/mistic100/jekyll-bootstrap-doc
-bundle install
-bundle exec jekyll serve
+{% highlight html %}
+<div id="map-container"><div id="map"></div></div>
+<script src="markerclusterer.js"></script>
+<script>
+    function initialize() {
+        var center = new google.maps.LatLng(51.5074, 0.1278);
+
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 3,
+          center: center,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        });
+
+        var markers = [];
+        var marker = new google.maps.Marker({
+            position: new google.maps.LatLng(51.5074, 0.1278)
+        });
+        markers.push(marker);
+
+        var options = {
+            imagePath: 'images/m'
+        };
+
+        var markerCluster = new MarkerClusterer(map, markers, options);
+    }
+
+    google.maps.event.addDomListener(window, 'load', initialize);
+</script>
 {% endhighlight %}
-
-  <h2 id="configuration">Configuration</h2>
-  <p>Adapt the <code>_config.yml</code> file to your project.</p>
-
-  <div class="table-responsive">
-    <table class="table table-bordered table-striped">
-      <thead>
-        <tr>
-          <th style="width: 130px;">Name</th>
-          <th>description</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>name</td>
-          <td>Name of the project.</td>
-        </tr>
-        <tr>
-          <td>version</td>
-          <td>Current version of the project</td>
-        </tr>
-        <tr>
-          <td>downloadUrl</td>
-          <td>URL of the download button</td>
-        </tr>
-        <tr>
-          <td>license</td>
-          <td>License of the project</td>
-        </tr>
-        <tr>
-          <td>licenseUrl</td>
-          <td>URL of the license text</td>
-        </tr>
-        <tr>
-          <td>headerLinks</td>
-          <td>List of links to display on the right of the top menu. Each item must contain <code>title</code> and <code>url</code> keys</td>
-        </tr>
-        <tr>
-          <td>footerLinks</td>
-          <td>List of links to display on the bottom of the page. Each item must contain <code>title</code> and <code>url</code> keys</td>
-        </tr>
-        <tr>
-          <td>header</td>
-          <td>Configuration of the header, two colors gradient and boolean to activate or deactivate <a href="http://qrohlf.com/trianglify/">Trianglify</a> generator</td>
-        </tr>
-        <tr>
-          <td>analytics</td>
-          <td>Google analytics identifiers. Provide <code>account</code> and <code>domain</code> or leave empty to deactivate</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <h3>Social buttons</h3>
-  <div class="table-responsive">
-    <table class="table table-bordered table-striped">
-      <thead>
-        <tr>
-          <th style="width: 130px;">Name</th>
-          <th>description</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>githubButton</td>
-          <td>Data used to generate <a href="http://ghbtns.com/">GitHub Buttons</a>. Provide <code>user</code> and <code>repo</code></td>
-        </tr>
-        <tr>
-          <td>twitter.enabled</td>
-          <td>Enable or disable Twitter "Tweet" button</td>
-        </tr>
-        <tr>
-          <td>twitter.via</td>
-          <td>Account linked to "Tweet" button</td>
-        </tr>
-        <tr>
-          <td>twitter.hash</td>
-          <td>Default hashtags for the "Tweet" button</td>
-        </tr>
-        <tr>
-          <td>twitter.account</td>
-          <td>Account for Twitter "Follow" button. Leave empty to deactivate</td>
-        </tr>
-        <tr>
-          <td>facebook.enabled</td>
-          <td>Enable or disable Facebook "Like" &amp; "Share" buttons</td>
-        </tr>
-        <tr>
-          <td>facebook.profileUrl</td>
-          <td>Profile for Facebook "Follow" button. Leave empty to deactivate</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
 </section>
 
-
 <section class="bs-docs-section">
-  <h1 id="usage" class="page-header">Usage</h1>
+	<h1 id="reference" class="page-header">Reference</h1>
 
-  <h2 id="pages">Pages</h2>
-  <p>The main page is the <code>index.html</code> file. You can also add additional pages by creating <code>.html</code> files in the root folder or in any sub-folder. Each page file must begins with a template declaration:</p>
+	The class MarkerClusterer extends google.maps.OverlayView
 
-{% highlight html %}
----
-layout: default
-title: Home
-description: Simple documentation template for Github pages
----
+	<h2 id="reference-constructor">Constructor</h2>
 
-<!-- content -->
-{% endhighlight %}
-
-  <p>Set <code>isHome</code> to <code>true</code> on the main page file, the homepage will have a bigger header with a central download button.</p>
-  
-{% highlight html %}
----
-..........
-isHome: true
----
-{% endhighlight %}
-
-  <p>Set <code>hide</code> to <code>true</code> to hide a page from the main menu, the page will still be accessible with direct link. <a href="hidden.html">Example</a>.</p>
-  
-{% highlight html %}
----
-..........
-hide: true
----
-{% endhighlight %}
-
-  <h2 id="titles">Titles</h2>
-  <p>In order to get the right menu automatically generated you must respect some conventions.</p>
-
-{% highlight html %}
-<!-- wrap each main section with "bs-docs-section" class -->
-<section class="bs-docs-section">
-  <!-- each section must contain ONE h1 with an id and optionally a "page-header" class -->
-  <h1 id="first-level" class="page-header">First level</h1>
-
-  <!-- you can optionally declare sub-sections with h2/h3 with an id -->
-  <h2 id="sub-section">Second level</h2>
-
-  <h3 id="another-sub-section">Still second level</h3>
-</section>
-{% endhighlight %}
-
-  <h2 id="highlight">Syntax highlight</h2>
-  <p>The powerful Pygments highlighter is activated on the template, just wrap your unescaped source code with the <code>{{ "{% highlight ... " }}%}</code> directive.</p>
-
-{% highlight text %}
-{{ "{% highlight html " }}%}
-<div>Some <b>HTML</b></div>
-{{ "{% endhighlight " }}%}
-
-{{ "{% highlight javascript " }}%}
-alert('Some javascript');
-{{ "{% endhighlight " }}%}
-{% endhighlight %}
-
-  <h2 id="resources">Resources &amp; links</h2>
-  <p>If you need to create internal links between your pages, or include resources (JS &amp; CSS), always start your URLs with <code>{{ "{{site.github.url" }}}}</code>.</p>
-
-{% highlight html %}
-<script src="{{ "{{site.github.url" }}}}/dist/my-script.js"></script>
-
-<a href="{{ "{{site.github.url" }}}}/about/index.html">About</a>
-{% endhighlight %}
-
-  <h2 id="bootbox">Bootbox</h2>
-  <p><a href="http://bootboxjs.com/">Bootbox</a> is installed with a syntax sugar to easily create pop-in content. To use this sugar you must create a clickable element with a <code>data-bootbox</code> attribute and an hidden content holder with a corresponding <code>id</code> attribute.</p>
-
-{% highlight html %}
-<button class="btn btn-primary btn-xs" data-bootbox="my-content">Button title</button>
-
-<div id="my-content" class="hidden" title="Pop-in title">
-  Pop-in content
-</div>
-{% endhighlight %}
-
-  <h2 id="gems">Plugins</h2>
-  <p>All available Jekyll plugins are installed by default, you can remove them by modifying the <code>gems</code> parameter in <code>_config.yml</code>. See the documentation on <a href="https://help.github.com/articles/using-jekyll-plugins-with-github-pages/">GitHub Help</a> pages.</p>
-
-  <h2 id="bower">Bower</h2>
-  <p>Fell free to use the <code>bower.json</code> to manage your front dependencies. Bower packages are added the <code>dist</code> directory and <b>MUST</b> be pushed to the repository. jQuery and Bootstrap are ignored by <code>.gitignore</code> as already loaded from a CDN.</p>
+	<div class="table-responsive">
+		<table class="table table-striped">
+			<tbody>
+				<tr>
+					<th>Constructor</th>
+					<th>Description</th>
+				</tr>
+				<tr>
+					<td>
+						<code>MarkerClusterer(<span class="type">map:google.maps.Map</span>, <span class="type">opt_markers:Array.&lt;google.maps.Marker&gt;</span>, <span class="type">opt_options:Object</span>)</code>
+					</td>
+					<td>A Marker Clusterer that clusters markers.</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	
+	<h2 id="reference-options">Options</h2>
+	<div class="table-responsive">
+		<table class="table table-striped">
+			<tbody>
+				<tr>
+				<th>Name</th>
+				<th>Type</th>
+				<th>Description</th>
+            </tr>
+            <tr>
+				<td><code>gridSize</code></td>
+				<td><code>number</code></td>
+				<td>The grid size of a cluster in pixels.</td>
+            </tr>
+            <tr>
+				<td><code>maxZoom</code></td>
+				<td><code>number</code></td>
+				<td>The maximum zoom level that a marker can be part of a cluster.</td>
+            </tr>
+            <tr>
+				<td><code>zoomOnClick</code></td>
+				<td><code>boolean</code></td>
+				<td>Whether the default behaviour of clicking on a cluster is to zoom into it.</td>
+            </tr>
+            <tr>
+				<td><code>averageCenter</code></td>
+				<td><code>boolean</code></td>
+				<td>Whether the center of each cluster should be the average of all markers in the cluster.</td>
+            </tr>
+            <tr>
+				<td><code>minimumClusterSize</code></td>
+				<td><code>number</code></td>
+				<td>The minimum number of markers to be in a cluster before the markers are hidden and a count is shown.</td>
+            </tr>
+            <tr>
+				<td><code>styles</code></td>
+				<td><code>object</code></td>
+				<td>An object that has style properties.</td>
+            </tr>
+          </tbody>
+        </table>
+	</div>
+	
+	<h2 id="reference-styles">Styles</h2>
+	<div class="table-responsive">
+		<table class="table table-striped">
+			<tbody>
+				<tr>
+					<th>Name</th>
+					<th>Type</th>
+					<th>Description</th>
+				</tr>
+				<tr>
+					<td><code>url</code></td>
+					<td><code>string</code></td>
+					<td>The image url.</td>
+				</tr>
+				<tr>
+					<td><code>height</code></td>
+					<td><code>number</code></td>
+					<td>The image height.</td>
+				</tr>
+				<tr>
+					<td><code>width</code></td>
+					<td><code>number</code></td>
+					<td>The image width.</td>
+				</tr>
+				<tr>
+					<td><code>anchor</code></td>
+					<td><code>Array</code></td>
+					<td>The anchor position of the label text.</td>
+				</tr>
+				<tr>
+					<td><code>textColor</code></td>
+					<td><code>string</code></td>
+					<td>The text color.</td>
+				</tr>
+				<tr>
+					<td><code>textSize</code></td>
+					<td><code>number</code></td>
+					<td>The text size.</td>
+				</tr>
+				<tr>
+					<td><code>backgroundPosition</code></td>
+					<td><code>string</code></td>
+					<td>The position of the backgound x, y.</td>
+				</tr>
+				<tr>
+					<td><code>iconAnchor</code></td>
+					<td><code>Array</code></td>
+					<td>The anchor position of the icon x, y.</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	
+	<h2 id="reference-styles">Methods</h2>
+	<div class="table-responsive">
+		<table class="table table-striped">
+			<tbody>
+				<tr>
+					<th>Methods</th>
+					<th>Return&nbsp;Value</th>
+					<th>Description</th>
+				</tr>
+				<tr>
+					<td><code>addMarker(<span class="type">marker:google.maps.Marker</span>, <span class="type">opt_nodraw:boolean</span>)</code></td>
+					<td><code>None</code></td>
+					<td>Adds a marker to the clusterer and redraws if needed.</td>
+				</tr>
+				<tr>
+					<td><code>addMarkers(<span class="type">markers:Array.&lt;google.maps.Marker&gt;</span>, <span class="type">opt_nodraw:boolean</span>)</code></td>
+					<td><code>None</code></td>
+					<td>Adds an array of markers to the clusterer.</td>
+				</tr>
+				<tr>
+					<td><code>clearMarkers()</code></td>
+					<td><code>None</code></td>
+					<td>Clears all clusters and markers from the clusterer.</td>
+				</tr>
+				<tr>
+					<td><code>getCalculator()</code></td>
+					<td><code>function(Array|number)</code></td>
+					<td>Gets the calculator function.</td>
+				</tr>
+				<tr>
+					<td><code>getExtendedBounds(<span class="type">bounds:google.maps.LatLngBounds</span>)</code></td>
+					<td><code>google.maps.LatLngBounds</code></td>
+					<td>Extends a bounds object by the grid size.</td>
+				</tr>
+				<tr>
+					<td><code>getGridSize()</code></td>
+					<td><code>number</code></td>
+					<td>Gets the size of the grid.</td>
+				</tr>
+				<tr>
+					<td><code>getMap()</code></td>
+					<td><code>google.maps.Map</code></td>
+					<td>Gets the google map that the clusterer is associated with.</td>
+				</tr>
+				<tr>
+					<td><code>getMarkers()</code></td>
+					<td><code>Array.<google.maps.marker></google.maps.marker></code></td>
+					<td>Gets the array of markers in the clusterer.</td>
+				</tr>
+				<tr>
+					<td><code>getMaxZoom()</code></td>
+					<td><code>number</code></td>
+					<td>Gets the max zoom for the clusterer.</td>
+				</tr>
+				<tr>
+					<td><code>getStyles()</code></td>
+					<td><code>Object</code></td>
+					<td>Gets the styles.</td>
+				</tr>
+				<tr>
+					<td><code>getTotalClusters()</code></td>
+					<td><code>number</code></td>
+					<td>Gets the number of clusters in the clusterer.</td>
+				</tr>
+				<tr>
+					<td><code>getTotalMarkers()</code></td>
+					<td><code>Array.<google.maps.marker></google.maps.marker></code></td>
+					<td>Gets the array of markers in the clusterer.</td>
+				</tr>
+				<tr>
+					<td><code>isZoomOnClick()</code></td>
+					<td><code>boolean</code></td>
+					<td>Whether zoom on click is set.</td>
+				</tr>
+				<tr>
+					<td><code>redraw()</code></td>
+					<td><code>None</code></td>
+					<td>Redraws the clusters.</td>
+				</tr>
+				<tr>
+					<td><code>removeMarker(<span class="type">marker:google.maps.Marker</span>)</code></td>
+					<td><code>boolean</code></td>
+					<td>Removes a marker from the cluster.</td>
+				</tr>
+				<tr>
+					<td><code>resetViewport()</code></td>
+					<td><code>None</code></td>
+					<td>Clears all existing clusters and recreates them.</td>
+				</tr>
+				<tr>
+					<td><code>setCalculator(<span class="type">calculator:function(Array|number)</span>)</code></td>
+					<td><code>None</code></td>
+					<td>Sets the calculator function.</td>
+				</tr>
+				<tr>
+					<td><code>setGridSize(<span class="type">size:number</span>)</code></td>
+					<td><code>None</code></td>
+					<td>Sets the size of the grid.</td>
+				</tr>
+				<tr>
+					<td><code>setMap(<span class="type">map:google.maps.Map</span>)</code></td>
+					<td><code>None</code></td>
+					<td>Sets the google map that the clusterer is associated with.</td>
+				</tr>
+				<tr>
+					<td><code>setMaxZoom(<span class="type">maxZoom:number</span>)</code></td>
+					<td><code>None</code></td>
+					<td>Sets the max zoom for the clusterer.</td>
+				</tr>
+				<tr>
+					<td><code>setStyles(<span class="type">styles:Object</span>)</code></td>
+					<td><code>None</code></td>
+					<td>Sets the styles.</td>
+				</tr>
+			</tbody>
+		</table>	
+	</div>
 </section>
