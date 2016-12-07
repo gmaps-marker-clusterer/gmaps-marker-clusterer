@@ -12,7 +12,7 @@ hide: true
 }
 </style>
 
-<a href="/">◀ Back to Overview</a>
+<a href="{{site.github.url}}/">◀ Back to Overview</a>
 
 <h1>Simple Example</h1>
 
@@ -39,7 +39,7 @@ hide: true
         }
 
         var options = {
-            imagePath: '/assets/images/m'
+            imagePath: '{{site.github.url}}/assets/images/m'
         };
 
         var markerCluster = new MarkerClusterer(map, markers, options);
