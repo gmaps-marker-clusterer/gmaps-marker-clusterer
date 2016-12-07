@@ -109,6 +109,11 @@ isHome: true
 				<td>The minimum number of markers to be in a cluster before the markers are hidden and a count is shown.</td>
             </tr>
             <tr>
+				<td><code>ignoreHiddenMarkers</code></td>
+				<td><code>boolean</code></td>
+				<td>Whether to ignore markers that are not visible or count and cluster them anyway.</td>
+            </tr>
+            <tr>
 				<td><code>styles</code></td>
 				<td><code>object</code></td>
 				<td>An object that has style properties.</td>
@@ -165,6 +170,11 @@ isHome: true
 					<td><code>iconAnchor</code></td>
 					<td><code>Array</code></td>
 					<td>The anchor position of the icon x, y.</td>
+				</tr>
+				<tr>
+					<td><code>cssClass</code></td>
+					<td><code>string</code></td>
+					<td>One or more CSS class for styling this marker.</td>
 				</tr>
 			</tbody>
 		</table>
@@ -283,6 +293,11 @@ isHome: true
 					<td><code>setStyles(<span class="type">styles:Object</span>)</code></td>
 					<td><code>None</code></td>
 					<td>Sets the styles.</td>
+				</tr>
+				<tr>
+					<td><code>getMarkersCluster(<span class="type">marker:google.maps.Marker</span>)</code></td>
+					<td><code>Cluster</code></td>
+					<td>Returns the marker clusterer that the cluster is associated with.</td>
 				</tr>
 			</tbody>
 		</table>	
