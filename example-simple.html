@@ -1,0 +1,52 @@
+---
+layout: default
+title: Simple Example
+hide: true
+---
+
+<style type="text/css">
+#map {
+    width: 600px;
+    height: 400px;
+    max-width: 100%;
+}
+</style>
+
+<a href="/">◀ Back to Overview</a>
+
+<h1>Simple Example</h1>
+
+<div id="map-container"><div id="map"></div></div>
+<script>
+    function initialize() {
+        var center = new google.maps.LatLng(51.5074, 0.1278);
+
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 3,
+          center: center,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        });
+
+        var markers = [];
+        for (var i = 0; i < 100; i++) {
+          var dataPhoto = data.photos[i];
+          var latLng = new google.maps.LatLng(dataPhoto.latitude,
+              dataPhoto.longitude);
+          var marker = new google.maps.Marker({
+            position: latLng
+          });
+          markers.push(marker);
+        }
+
+        var options = {
+            imagePath: '/assets/images/m'
+        };
+
+        var markerCluster = new MarkerClusterer(map, markers, options);
+    }
+</script>
+
+
+<script src="{{site.github.url}}/assets/js/markerclusterer.js"></script>
+<script src="{{site.github.url}}/assets/js/data.json"></script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?callback=initialize&key=AIzaSyAdgJ4q02RCxMbJhNMsOIaHQ1uYr2Bu1n4"></script>

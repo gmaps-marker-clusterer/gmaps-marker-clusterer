@@ -48,6 +48,7 @@ facebook:
   enabled: false
   profileUrl:
 
+permalink: pretty
 
 exclude: ['README.md', 'LICENSE', 'bower.json', 'Gemfile.lock', 'Gemfile']
 
