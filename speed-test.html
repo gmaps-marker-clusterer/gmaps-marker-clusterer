@@ -6,9 +6,8 @@ hide: true
 
 <style type="text/css">
 #map {
-    width: 600px;
-    height: 400px;
-    max-width: 100%;
+    width: 100%;
+    height: 480px;
 }
 </style>
 
@@ -16,31 +15,38 @@ hide: true
 
 <h1>Speed Test</h1>
 
-<div id="panel">
-    <div>
-        <input type="checkbox" checked="checked" id="usegmm"/>
-        <span>Use MarkerClusterer</span>
-    </div>
+<div class="row">
+  <div class="col-xs-12 col-sm-5 col-md-4 col-lg-3">
+    <div id="panel">
+        <div>
+            <input type="checkbox" checked="checked" id="usegmm"/>
+            <span>Use MarkerClusterer</span>
+        </div>
+        <div>
+            Markers:
+            <select id="nummarkers">
+              <option value="10">10</option>
+              <option value="50">50</option>
+              <option value="100" selected="selected">100</option>
+              <option value="500">500</option>
+              <option value="1000">1000</option>
+            </select>
 
-    <div>
-        Markers:
-        <select id="nummarkers">
-        <option value="10">10</option>
-        <option value="50">50</option>
-        <option value="100" selected="selected">100</option>
-        <option value="500">500</option>
-        <option value="1000">1000</option>
-        </select>
+            <div>Time used: <span id="timetaken"></span> ms</div>
+        </div>
 
-        <span>Time used: <span id="timetaken"></span> ms</span>
-    </div>
+        <hr>
 
-    <strong>Marker List</strong>
-    <div id="markerlist">
+        <strong>Marker List</strong>
+        <div id="markerlist">
+        </div>
+    </div>    
+  </div>
+  <div class="col-xs-12 col-sm-7 col-md-8 col-lg-9">
+    <div id="map-container">
+      <div id="map"></div>
     </div>
-</div>
-<div id="map-container">
-    <div id="map"></div>
+  </div>
 </div>
 
 <script>
@@ -51,10 +57,6 @@ hide: true
  * MarkerClusterer and without MarkerClusterer.
  * @author Luke Mahe (v2 author: Xiaoxi Wu)
  */
-
-function $(element) {
-  return document.getElementById(element);
-}
 
 var speedTest = {};
 
@@ -72,7 +74,7 @@ speedTest.init = function() {
     'mapTypeId': google.maps.MapTypeId.ROADMAP
   };
 
-  speedTest.map = new google.maps.Map($('map'), options);
+  speedTest.map = new google.maps.Map(document.getElementById('map'), options);
   speedTest.pics = data.photos;
   
   var useGmm = document.getElementById('usegmm');
@@ -90,7 +92,7 @@ speedTest.showMarkers = function() {
   speedTest.markers = [];
 
   var type = 1;
-  if ($('usegmm').checked) {
+  if (document.getElementById('usegmm').checked) {
     type = 0;
   }
 
@@ -98,9 +100,9 @@ speedTest.showMarkers = function() {
     speedTest.markerClusterer.clearMarkers();
   }
 
-  var panel = $('markerlist');
+  var panel = document.getElementById('markerlist');
   panel.innerHTML = '';
-  var numMarkers = $('nummarkers').value;
+  var numMarkers = document.getElementById('nummarkers').value;
 
   for (var i = 0; i < numMarkers; i++) {
     var titleText = speedTest.pics[i].photo_title;
@@ -121,7 +123,7 @@ speedTest.showMarkers = function() {
     var latLng = new google.maps.LatLng(speedTest.pics[i].latitude,
         speedTest.pics[i].longitude);
 
-    var imageUrl = 'http://chart.apis.google.com/chart?cht=mm&chs=24x32&chco=' +
+    var imageUrl = 'https://chart.apis.google.com/chart?cht=mm&chs=24x32&chco=' +
         'FFFFFF,008CFF,000000&ext=.png';
     var markerImage = new google.maps.MarkerImage(imageUrl,
         new google.maps.Size(24, 32));
@@ -169,7 +171,7 @@ speedTest.markerClickFunction = function(pic, latlng) {
 };
 
 speedTest.clear = function() {
-  $('timetaken').innerHTML = 'cleaning...';
+  document.getElementById('timetaken').innerHTML = 'cleaning...';
   for (var i = 0, marker; marker = speedTest.markers[i]; i++) {
     marker.setMap(null);
   }
@@ -181,10 +183,10 @@ speedTest.change = function() {
 };
 
 speedTest.time = function() {
-  $('timetaken').innerHTML = 'timing...';
+  document.getElementById('timetaken').innerHTML = 'timing...';
   var start = new Date();
-  if ($('usegmm').checked) {
-    speedTest.markerClusterer = new MarkerClusterer(speedTest.map, speedTest.markers, {imagePath: '../images/m'});
+  if (document.getElementById('usegmm').checked) {
+    speedTest.markerClusterer = new MarkerClusterer(speedTest.map, speedTest.markers, {imagePath: 'https://raw.githubusercontent.com/gmaps-marker-clusterer/gmaps-marker-clusterer/master/images/m'});
   } else {
     for (var i = 0, marker; marker = speedTest.markers[i]; i++) {
       marker.setMap(speedTest.map);
@@ -192,7 +194,7 @@ speedTest.time = function() {
   }
 
   var end = new Date();
-  $('timetaken').innerHTML = end - start;
+  document.getElementById('timetaken').innerHTML = end - start;
 };
 {% endraw %}
 </script>
@@ -200,4 +202,4 @@ speedTest.time = function() {
 
 <script src="{{site.github.url}}/assets/js/markerclusterer.js"></script>
 <script src="{{site.github.url}}/assets/js/data.json"></script>
-<script async defer src="https://maps.googleapis.com/maps/api/js?callback=initialize&key=AIzaSyAdgJ4q02RCxMbJhNMsOIaHQ1uYr2Bu1n4"></script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?callback=speedTest.init&key=AIzaSyAdgJ4q02RCxMbJhNMsOIaHQ1uYr2Bu1n4"></script>
