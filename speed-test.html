@@ -44,6 +44,7 @@ hide: true
 </div>
 
 <script>
+{% raw %}
 /**
  * @fileoverview This demo is used for MarkerClusterer. It will show 100 markers
  * using MarkerClusterer and count the time to show the difference between using
@@ -193,6 +194,7 @@ speedTest.time = function() {
   var end = new Date();
   $('timetaken').innerHTML = end - start;
 };
+{% endraw %}
 </script>
 
 
