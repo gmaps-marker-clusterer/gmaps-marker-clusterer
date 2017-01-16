@@ -109,6 +109,17 @@ function MarkerClusterer(map, opt_markers, opt_options) {
   this.cssClass_ = '';
 
   /**
+   * @private
+   * @type {string} Set a default Cluster Class 
+   */
+  this.cssDefaultClass_ = 'cluster';
+
+  /**
+   * @private
+   */
+  this.setIndex_ = 0;
+
+  /**
    * @type {boolean}
    * @private
    */
@@ -268,14 +279,14 @@ MarkerClusterer.prototype.setupStyles_ = function() {
   if (this.styles_.length) {
     return;
   }
-
+  
   for (var i = 0, size; size = this.sizes[i]; i++) {
     var url = '';
     if (typeof this.imagePath_ === 'function') {
-      url = this.imagePath_(i, size);
+      url = this.imagePath_(i, size);      
     } else {
       url = this.imagePath_ + (i + 1) + '.' + this.imageExtension_;
-    }    
+    }
     this.styles_.push({
       url: url,
       height: size,
@@ -405,6 +416,7 @@ MarkerClusterer.prototype.calculator_ = function(markers, numStyles) {
   }
 
   index = Math.min(index, numStyles);
+
   return {
     text: count,
     index: index
@@ -704,7 +716,7 @@ MarkerClusterer.prototype.clearMarkers = function() {
 
   // Set the markers a empty array.
   this.markers_ = [];
-	this.markersCluster_ = {};
+  this.markersCluster_ = {};
   this.markersUniqueID = 1;  
 };
 
@@ -1128,7 +1140,9 @@ ClusterIcon.prototype.onAdd = function() {
     var markerClusterer = this.cluster_.getMarkerClusterer();
 
     if (markerClusterer.cssClass_) {
-      this.div_.className = markerClusterer.cssClass_;
+      this.div_.className = markerClusterer.cssClass_ + ' ' + markerClusterer.cssDefaultClass_ + this.setIndex_;
+    } else {
+      this.div_.className = markerClusterer.cssDefaultClass_ + this.setIndex_;
     }
   }
 
@@ -1273,6 +1287,7 @@ ClusterIcon.prototype.useStyle = function() {
   this.textSize_ = style['textSize'];
   this.backgroundPosition_ = style['backgroundPosition'];
   this.iconAnchor_ = style['iconAnchor'];
+  this.setIndex_ = index;
 };
 
 
