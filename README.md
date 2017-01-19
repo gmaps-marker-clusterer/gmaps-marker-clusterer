@@ -128,4 +128,4 @@ Have a look at the [custom-css example](examples/custom-css_example.html).
 All code is licensed under Apache 2.0. See [LICENSE](LICENSE)-File.
 
 The gmaps-marker-clusterer Logo is licensed under [CC BY-SA 4.0](http://creativecommons.org/licenses/by-sa/4.0/).
-[[!CC BY-SA 4.0](https://i.creativecommons.org/l/by-sa/4.0/88x31.png)](http://creativecommons.org/licenses/by-sa/4.0/)
+[![CC BY-SA 4.0](https://i.creativecommons.org/l/by-sa/4.0/88x31.png)](http://creativecommons.org/licenses/by-sa/4.0/)
