@@ -1,0 +1,245 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>MarkerClusterer v3 Mouseover/Mouseout</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 10px 20px 20px;
+            font-family: Arial;
+            font-size: 16px;
+        }
+        
+        #map-container {
+            padding: 6px;
+            border-width: 1px;
+            border-style: solid;
+            border-color: #ccc #ccc #999 #ccc;
+            -webkit-box-shadow: rgba(64, 64, 64, 0.5) 0 2px 5px;
+            -moz-box-shadow: rgba(64, 64, 64, 0.5) 0 2px 5px;
+            box-shadow: rgba(64, 64, 64, 0.1) 0 2px 5px;
+            width: 600px;
+        }
+        
+        #map {
+            width: 600px;
+            height: 400px;
+        }
+        
+        .custom-pin {
+            height: 1em;
+            line-height: 1;
+            width: 1em;
+            padding: .7em;
+            text-align: center;
+            cursor: pointer;
+            color: white;
+            background: black;
+            position: absolute;
+            border-radius: .5em;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 500ms;
+            z-index: 2;
+        }
+        
+        .custom-pin::after {
+            content: '';
+            border-width: 1em .5em;
+            border-color: black transparent transparent transparent;
+            border-style: solid;
+            position: absolute;
+            z-index: 2;
+            top: 99%;
+            left: calc(50% - .5em);
+        }
+        
+        .custom-pin:hover {
+            transform: scale(1.15);
+        }
+        
+        .child-markers {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+        }
+        
+        .child-marker {
+            position: absolute;
+            padding: .5em;
+            background: darkseagreen;
+            width: 5em;
+            z-index: 3;
+            font-weight: normal;
+        }
+        
+        .child-marker {
+            display: none;
+        }
+        
+        .child-marker::after {
+            content: '';
+            background: darkseagreen;
+            position: absolute;
+            z-index: 1;
+        }
+        
+        .child-marker:nth-child(1) {
+            left: -2em;
+            bottom: calc(100% + 1em);
+            display: block;
+        }
+        
+        .child-marker:nth-child(1)::after {
+            top: 100%;
+            left: calc(50% + 1px);
+            height: 1em;
+            width: 2px;
+        }
+        
+        .child-marker:nth-child(2) {
+            left: calc(100% + 1em);
+            top: calc(50% + .5em);
+            display: block;
+        }
+        
+        .child-marker:nth-child(2)::after {
+            top: calc(50% - 1px);
+            right: 100%;
+            height: 2px;
+            width: 1em;
+        }
+        
+        .child-marker:nth-child(3) {
+            top: calc(100% + 4em);
+            width: 5em;
+            left: -2em;
+            display: block;
+        }
+        
+        .child-marker:nth-child(3)::after {
+            bottom: 100%;
+            left: calc(50% + 1px);
+            height: 1em;
+            width: 2px;
+        }
+        
+        .child-marker:nth-child(4) {
+            right: calc(100% + 1em);
+            top: calc(50% + .5em);
+            display: block;
+        }
+        
+        .child-marker:nth-child(4)::after {
+            top: calc(50%);
+            left: 100%;
+            height: 2px;
+            width: 1em;
+        }
+    </style>
+
+    <script src="https://maps.googleapis.com/maps/api/js"></script>
+    <script src="data.json"></script>
+    <script>
+        var script = '<script type="text/javascript" src="../src/markerclusterer';
+        if (document.location.search.indexOf('compiled') !== -1) {
+            script += '_compiled';
+        }
+        script += '.js"><' + '/script>';
+        document.write(script);
+    </script>
+
+    <script>
+        var childMarkers;
+
+        function showChildMarkers(clusterIcon, event) {
+            var markers = clusterIcon.cluster_.markers_;
+            var clusterElement = event.currentTarget;
+            childMarkers = document.createElement('div');
+
+            childMarkers.classList.add('child-markers');
+
+            markers.forEach(function(item) {
+                console.log(item.customData.title);
+
+                var marker = document.createElement('div');
+                var t = document.createTextNode(item.customData.title);
+
+                marker.classList.add('child-marker');
+                marker.appendChild(t);
+                childMarkers.appendChild(marker);
+            });
+
+            clusterElement.appendChild(childMarkers);
+        }
+
+        function hideChildMarkers(clusterIcon, event) {
+            if (childMarkers) {
+                event.currentTarget.removeChild(childMarkers);
+            }
+        }
+
+        function initialize() {
+            var center = new google.maps.LatLng(37.4419, -122.1419),
+                map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 3,
+                    center: center,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                }),
+                markers = [],
+                options = {
+                    cssClass: 'custom-pin',
+                    onMouseoverCluster: showChildMarkers,
+                    onMouseoutCluster: hideChildMarkers
+                };
+
+            for (var i = 0; i < 100; i++) {
+                var dataPhoto = data.photos[i];
+                var latLng = new google.maps.LatLng(dataPhoto.latitude,
+                    dataPhoto.longitude);
+                var marker = new google.maps.Marker({
+                    position: latLng
+                });
+
+                marker.customData = {
+                    title: 'place ' + i
+                };
+
+                markers.push(marker);
+            }
+
+            var markerCluster = new MarkerClusterer(map, markers, options);
+        }
+        google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
+    <script>
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-12846745-20']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+            var ga = document.createElement('script');
+            ga.type = 'text/javascript';
+            ga.async = true;
+            ga.src = ('https:' === document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+</head>
+
+<body>
+    <h3>A simple example of MarkerClusterer (100 markers)</h3>
+    <p>
+        <a href="?compiled">Compiled</a> |
+        <a href="?">Standard</a> version of the script.
+    </p>
+    <div id="map-container">
+        <div id="map"></div>
+    </div>
+</body>
+
+</html>
