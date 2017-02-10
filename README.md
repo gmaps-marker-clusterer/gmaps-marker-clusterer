@@ -1,4 +1,6 @@
-[![GitHub version](https://badge.fury.io/gh/gmaps-marker-clusterer%2Fgmaps-marker-clusterer.svg)](https://badge.fury.io/gh/gmaps-marker-clusterer%2Fgmaps-marker-clusterer) [![npm version](https://badge.fury.io/js/gmaps-marker-clusterer.svg)](https://badge.fury.io/js/gmaps-marker-clusterer)
+[![GitHub version](https://badge.fury.io/gh/gmaps-marker-clusterer%2Fgmaps-marker-clusterer.svg)](https://badge.fury.io/gh/gmaps-marker-clusterer%2Fgmaps-marker-clusterer) [![npm version](https://badge.fury.io/js/gmaps-marker-clusterer.svg)](https://badge.fury.io/js/gmaps-marker-clusterer) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) [![License: CC BY-SA 4.0](https://img.shields.io/badge/License-CC%20BY--SA%204.0-lightgrey.svg)](http://creativecommons.org/licenses/by-sa/4.0/)
+
+
 
 **Please note:** This is a fork of the js-marker-clusterer library, the original repository can be found here https://github.com/googlemaps/js-marker-clusterer
 
