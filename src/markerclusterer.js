@@ -301,11 +301,9 @@ MarkerClusterer.prototype.setupStyles_ = function() {
         } else {
             url = this.imagePath_ + (i + 1) + '.' + this.imageExtension_;
         }
-        this.styles_.push({
-            url: url,
-            height: size,
-            width: size
-        });
+        this.styles_['url'] = url;
+        this.styles_['width'] = size;
+        this.styles_['height'] = size;
     }
 };
 
@@ -1330,9 +1328,7 @@ ClusterIcon.prototype.setSums = function(sums) {
  * Sets the icon to the the styles.
  */
 ClusterIcon.prototype.useStyle = function() {
-    var index = Math.max(0, this.sums_.index - 1);
-    index = Math.min(this.styles_.length - 1, index);
-    var style = this.styles_[index];
+    var style = this.styles_;
     this.url_ = style['url'];
     this.height_ = style['height'];
     this.width_ = style['width'];
