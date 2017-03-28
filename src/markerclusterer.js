@@ -51,7 +51,7 @@
  *                           is shown.
  *     'ignoreHiddenMarkers': (boolean) Whether to ignore markers that are not
  *                            visible or count and cluster them anyway 
- *     'styles': (object) An object that has style properties:
+ *     'styles': (Array) An array of objects with these properties:
  *       'url': (string) The image url.
  *       'height': (number) The image height.
  *       'width': (number) The image width.
