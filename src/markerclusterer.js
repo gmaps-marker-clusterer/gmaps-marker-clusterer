@@ -1173,12 +1173,15 @@ ClusterIcon.prototype.triggerClusterMouseout = function(event) {
  * @ignore
  */
 ClusterIcon.prototype.onAdd = function() {
-    this.div_ = document.createElement('DIV');
-
+    // Creating DOM Element only if visible, otherwise an empty div will be rendered.
     if (this.visible_) {
+        this.div_ = document.createElement('DIV');
+
         var pos = this.getPosFromLatLng_(this.center_);
+
         this.div_.style.cssText = this.createCss(pos);
         this.div_.innerHTML = this.sums_.text;
+
         var markerClusterer = this.cluster_.getMarkerClusterer();
 
         if (markerClusterer.cssClass_) {
@@ -1186,46 +1189,46 @@ ClusterIcon.prototype.onAdd = function() {
         } else {
             this.div_.className = markerClusterer.cssDefaultClass_ + this.setIndex_;
         }
+
+        var panes = this.getPanes();
+
+        panes.overlayMouseTarget.appendChild(this.div_);
+
+        var that = this;
+        var isDragging = false;
+        var isMouseDown = false;
+
+        google.maps.event.addDomListener(this.div_, 'click', function(event) {
+            // Only perform click when not preceded by a drag
+            if (!isDragging) {
+                that.triggerClusterClick(event);
+            }
+        });
+
+        google.maps.event.addDomListener(this.div_, 'mousedown', function() {
+            isDragging = false;
+            isMouseDown = true;
+        });
+
+        google.maps.event.addDomListener(this.div_, 'mouseup', function() {
+            isDragging = false;
+            isMouseDown = false;
+        });
+
+        google.maps.event.addDomListener(this.div_, 'mousemove', function() {
+            if (isMouseDown) {
+                isDragging = true;
+            }
+        });
+
+        google.maps.event.addDomListener(this.div_, 'mouseover', function(event) {
+            that.triggerClusterMouseover(event);
+        });
+
+        google.maps.event.addDomListener(this.div_, 'mouseout', function(event) {
+            that.triggerClusterMouseout(event);
+        });
     }
-
-    var panes = this.getPanes();
-
-    panes.overlayMouseTarget.appendChild(this.div_);
-
-    var that = this;
-    var isDragging = false;
-    var isMouseDown = false;
-
-    google.maps.event.addDomListener(this.div_, 'click', function(event) {
-        // Only perform click when not preceded by a drag
-        if (!isDragging) {
-            that.triggerClusterClick(event);
-        }
-    });
-
-    google.maps.event.addDomListener(this.div_, 'mousedown', function() {
-        isDragging = false;
-        isMouseDown = true;
-    });
-
-    google.maps.event.addDomListener(this.div_, 'mouseup', function() {
-        isDragging = false;
-        isMouseDown = false;
-    });
-
-    google.maps.event.addDomListener(this.div_, 'mousemove', function() {
-        if (isMouseDown) {
-            isDragging = true;
-        }
-    });
-
-    google.maps.event.addDomListener(this.div_, 'mouseover', function(event) {
-        that.triggerClusterMouseover(event);
-    });
-
-    google.maps.event.addDomListener(this.div_, 'mouseout', function(event) {
-        that.triggerClusterMouseout(event);
-    });
 };
 
 /**
