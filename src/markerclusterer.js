@@ -577,7 +577,8 @@ MarkerClusterer.prototype.removeMarker = function(marker, opt_nodraw) {
 MarkerClusterer.prototype.removeMarkers = function(markers, opt_nodraw) {
     var removed = false;
 
-    for (var i = 0, marker; marker = markers[i]; i++) {
+    for (var i = markers.length; i >= 0; i--) {
+        var marker = markers[i];
         var r = this.removeMarker_(marker);
         removed = removed || r;
     }
