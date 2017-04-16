@@ -49,6 +49,26 @@ hide: true
   </div>
 </div>
 
+<script type="text/template" id="info-window-template">
+    <div class="info">
+        <h3>
+            <%this.title%>
+        </h3>
+        <div class="info-body">
+            <a href="<%this.url%>" target="_blank">
+                <img src="<%this.fileurl%>" class="info-img"/>
+            </a>
+        </div>
+        <a href="http://www.panoramio.com/" target="_blank">
+            <img src="http://maps.google.com/intl/en_ALL/mapfiles/iw_panoramio.png"/>
+        </a>
+        <br/>
+        <a href="<%this.pic.owner_url%>" target="_blank">
+            <%this.pic.owner_name%>
+        </a>
+    </div>
+</script>
+
 <script>
 {% raw %}
 /**
@@ -59,6 +79,23 @@ hide: true
  */
 
 var speedTest = {};
+
+/* Template engine from http://krasimirtsonev.com/blog/article/Javascript-template-engine-in-just-20-line */
+var TemplateEngine = function(html, options) {
+  var re = /<%([^%>]+)?%>/g, reExp = /(^( )?(if|for|else|switch|case|break|{|}))(.*)?/g, code = 'var r=[];\n', cursor = 0, match;
+  var add = function(line, js) {
+    js? (code += line.match(reExp) ? line + '\n' : 'r.push(' + line + ');\n') :
+      (code += line != '' ? 'r.push("' + line.replace(/"/g, '\\"') + '");\n' : '');
+    return add;
+  }
+  while(match = re.exec(html)) {
+    add(html.slice(cursor, match.index))(match[1], true);
+    cursor = match.index + match[0].length;
+  }
+  add(html.substr(cursor, html.length - cursor));
+  code += 'return r.join("");';
+  return new Function(code.replace(/[\r\t\n]/g, '')).apply(options);
+}
 
 speedTest.pics = null;
 speedTest.map = null;
@@ -154,15 +191,13 @@ speedTest.markerClickFunction = function(pic, latlng) {
     var url = pic.photo_url;
     var fileurl = pic.photo_file_url;
 
-    var infoHtml = '<div class="info"><h3>' + title +
-      '</h3><div class="info-body">' +
-      '<a href="' + url + '" target="_blank"><img src="' +
-      fileurl + '" class="info-img"/></a></div>' +
-      '<a href="http://www.panoramio.com/" target="_blank">' +
-      '<img src="http://maps.google.com/intl/en_ALL/mapfiles/' +
-      'iw_panoramio.png"/></a><br/>' +
-      '<a href="' + pic.owner_url + '" target="_blank">' + pic.owner_name +
-      '</a></div></div>';
+    var infoHtmlTemplate = document.getElementById('info-window-template').innerHTML;
+    var infoHtml = TemplateEngine(infoHtmlTemplate, {
+      title: title,
+      fileurl: fileurl,
+      url: url,
+      pic: pic
+    });
 
     speedTest.infoWindow.setContent(infoHtml);
     speedTest.infoWindow.setPosition(latlng);
