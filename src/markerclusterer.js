@@ -1344,6 +1344,7 @@ ClusterIcon.prototype.useStyle = function() {
     this.anchor_ = style['anchor'];
     this.textSize_ = style['textSize'];
     this.backgroundPosition_ = style['backgroundPosition'];
+    this.backgroundSize_ = style['backgroundSize'];
     this.iconAnchor_ = style['iconAnchor'];
     this.setIndex_ = index;
 };
@@ -1373,6 +1374,8 @@ ClusterIcon.prototype.createCss = function(pos) {
         style.push('background-image:url(' + this.url_ + ');');
         var backgroundPosition = this.backgroundPosition_ ? this.backgroundPosition_ : '0 0';
         style.push('background-position:' + backgroundPosition + ';');
+        var backgroundSize = this.backgroundSize_ ? this.backgroundSize_ : 'auto auto';
+        style.push('background-size:' + backgroundSize + ';');
 
         if (typeof this.anchor_ === 'object') {
             if (typeof this.anchor_[0] === 'number' && this.anchor_[0] > 0 &&
