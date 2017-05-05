@@ -540,8 +540,11 @@ MarkerClusterer.prototype.removeMarker_ = function(marker) {
     }
 
     marker.setMap(null);
-
+	
     this.markers_.splice(index, 1);
+	if (this.markersCluster_[marker.uniqueID]) {
+		this.clusters_[this.markersCluster_[marker.uniqueID]].removeMarker(marker);
+	}
     delete this.markersCluster_[marker.uniqueID];
 
     return true;
@@ -552,19 +555,10 @@ MarkerClusterer.prototype.removeMarker_ = function(marker) {
  * Remove a marker from the cluster.
  *
  * @param {google.maps.Marker} marker The marker to remove.
- * @param {boolean=} opt_nodraw Optional boolean to force no redraw.
  * @return {boolean} True if the marker was removed.
  */
-MarkerClusterer.prototype.removeMarker = function(marker, opt_nodraw) {
-    var removed = this.removeMarker_(marker);
-
-    if (!opt_nodraw && removed) {
-        this.resetViewport();
-        this.redraw();
-        return true;
-    } else {
-        return false;
-    }
+MarkerClusterer.prototype.removeMarker = function(marker) {
+	return this.removeMarker_(marker);
 };
 
 
@@ -572,9 +566,8 @@ MarkerClusterer.prototype.removeMarker = function(marker, opt_nodraw) {
  * Removes an array of markers from the cluster.
  *
  * @param {Array.<google.maps.Marker>} markers The markers to remove.
- * @param {boolean=} opt_nodraw Optional boolean to force no redraw.
  */
-MarkerClusterer.prototype.removeMarkers = function(markers, opt_nodraw) {
+MarkerClusterer.prototype.removeMarkers = function(markers) {
     var removed = false;
 
     for (var i = markers.length; i >= 0; i--) {
@@ -583,11 +576,7 @@ MarkerClusterer.prototype.removeMarkers = function(markers, opt_nodraw) {
         removed = removed || r;
     }
 
-    if (!opt_nodraw && removed) {
-        this.resetViewport();
-        this.redraw();
-        return true;
-    }
+	return removed;
 };
 
 
@@ -741,10 +730,15 @@ MarkerClusterer.prototype.clearMarkers = function() {
  * @param {boolean} opt_hide To also hide the marker.
  */
 MarkerClusterer.prototype.resetViewport = function(opt_hide) {
-    // Remove all the clusters
-    for (var i = 0, cluster; cluster = this.clusters_[i]; i++) {
-        cluster.remove();
-    }
+    var oldClusters = this.clusters_.slice();
+
+    // Remove the old clusters.
+    // Do it in a timeout so the other clusters have been drawn first.
+    window.setTimeout(function() {
+        for (var i = 0, cluster; cluster = oldClusters[i]; i++) {
+            cluster.remove();
+        }
+    }, 0);
 
     // Reset the markers to not be added and to be invisible.
     for (var i = 0, marker; marker = this.markers_[i]; i++) {
@@ -763,18 +757,10 @@ MarkerClusterer.prototype.resetViewport = function(opt_hide) {
  *
  */
 MarkerClusterer.prototype.repaint = function() {
-    var oldClusters = this.clusters_.slice();
     this.clusters_.length = 0;
     this.resetViewport();
     this.redraw();
 
-    // Remove the old clusters.
-    // Do it in a timeout so the other clusters have been drawn first.
-    window.setTimeout(function() {
-        for (var i = 0, cluster; cluster = oldClusters[i]; i++) {
-            cluster.remove();
-        }
-    }, 0);
 };
 
 
@@ -785,6 +771,9 @@ MarkerClusterer.prototype.redraw = function() {
     this.createClusters_();
 };
 
+MarkerClusterer.prototype.toRad_ = function (deg) {
+   return deg * Math.PI / 180;
+}
 
 /**
  * Calculates the distance between two latlng locations in km.
@@ -800,15 +789,14 @@ MarkerClusterer.prototype.distanceBetweenPoints_ = function(p1, p2) {
         return 0;
     }
 
-    var R = 6371; // Radius of the Earth in km
-    var dLat = (p2.lat() - p1.lat()) * Math.PI / 180;
-    var dLon = (p2.lng() - p1.lng()) * Math.PI / 180;
-    var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-        Math.cos(p1.lat() * Math.PI / 180) * Math.cos(p2.lat() * Math.PI / 180) *
-        Math.sin(dLon / 2) * Math.sin(dLon / 2);
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    var d = R * c;
-    return d;
+	var aLat = this.toRad_(p2.lat());
+	var bLat = this.toRad_(p1.lat());
+	var dLat2 = (bLat - aLat) * 0.5;
+	var dLon2 = this.toRad_(p2.lng() - p1.lng()) * 0.5;
+	var sindLat = Math.sin(dLat2);
+	var sindLon = Math.sin(dLon2);
+	var x = sindLat * sindLat + Math.cos(aLat) * Math.cos(bLat) * sindLon * sindLon;
+	return 6371 * 2 * Math.asin(Math.sqrt(x));
 };
 
 
@@ -896,22 +884,22 @@ function Cluster(markerClusterer) {
 }
 
 /**
- * Determins if a marker is already added to the cluster.
+ * Returns marker index in this.markers_ arry
  *
  * @param {google.maps.Marker} marker The marker to check.
- * @return {boolean} True if the marker is already added.
+ * @return {boolean} Position in the array or -1 if not found
  */
-Cluster.prototype.isMarkerAlreadyAdded = function(marker) {
+Cluster.prototype.getMarkerIndex = function(marker) {
     if (this.markers_.indexOf) {
-        return this.markers_.indexOf(marker) != -1;
+        return this.markers_.indexOf(marker);
     } else {
         for (var i = 0, m; m = this.markers_[i]; i++) {
             if (m == marker) {
-                return true;
+                return i;
             }
         }
     }
-    return false;
+    return -1;
 };
 
 
@@ -922,7 +910,7 @@ Cluster.prototype.isMarkerAlreadyAdded = function(marker) {
  * @return {boolean} True if the marker was added.
  */
 Cluster.prototype.addMarker = function(marker) {
-    if (this.isMarkerAlreadyAdded(marker)) {
+    if (this.getMarkerIndex(marker) != -1) {
         return false;
     }
 
@@ -963,6 +951,30 @@ Cluster.prototype.addMarker = function(marker) {
     return true;
 };
 
+/**
+ * Removes a marker from the cluster.
+ *
+ * @param {google.maps.Marker} marker The marker to remove.
+ * @return {boolean} True if the marker was removed.
+ */
+Cluster.prototype.removeMarker = function(marker) {
+	var index = this.getMarkerIndex(marker);
+    if (index === -1) {
+        return false;
+    }
+
+    this.markers_.splice(index, 1);
+
+    var len = this.markers_.length;
+    if (len < this.minClusterSize_) {
+        for (var i = 0; i < len; i++) {
+            this.markers_[i].setMap(this.map_);
+        }
+    }
+
+    this.updateIcon();
+    return true;
+};
 
 /**
  * Returns the marker clusterer that the cluster is associated with.
@@ -1260,8 +1272,10 @@ ClusterIcon.prototype.getPosFromLatLng_ = function(latlng) {
 ClusterIcon.prototype.draw = function() {
     if (this.visible_) {
         var pos = this.getPosFromLatLng_(this.center_);
-        this.div_.style.top = pos.y + 'px';
-        this.div_.style.left = pos.x + 'px';
+		if (this.div_) {
+			this.div_.style.top = pos.y + 'px';
+			this.div_.style.left = pos.x + 'px';
+		}
     }
 };
 
