@@ -651,6 +651,16 @@ MarkerClusterer.prototype.getTotalClusters = function() {
 
 
 /**
+ *  Returns the list of clusters in the clusterer
+ *
+ *  @return {Array.<Cluster>} The list of clusters.
+ */
+MarkerClusterer.prototype.getClusters = function() {
+    return this.clusters_;
+};
+
+
+/**
  * Returns the google map that the clusterer is associated with.
  *
  * @return {google.maps.Map} The map.
