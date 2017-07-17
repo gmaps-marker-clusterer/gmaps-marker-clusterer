@@ -1232,9 +1232,8 @@ ClusterIcon.prototype.onAdd = function () {
  * @ignore
  */
 function defaultClusterOnAdd(clusterIcon) {
-    // Creating DOM Element only if visible, otherwise an empty div will be rendered.
+    clusterIcon.div_ = document.createElement('DIV');
     if (clusterIcon.visible_) {
-        clusterIcon.div_ = document.createElement('DIV');
         var pos = clusterIcon.getPosFromLatLng_(clusterIcon.center_);
         clusterIcon.div_.style.cssText = clusterIcon.createCss(pos);
         clusterIcon.div_.innerHTML = clusterIcon.sums_.text;
