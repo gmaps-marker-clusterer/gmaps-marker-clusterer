@@ -50,7 +50,7 @@
  *                           cluster before the markers are hidden and a count
  *                           is shown.
  *     'ignoreHiddenMarkers': (boolean) Whether to ignore markers that are not
- *                            visible or count and cluster them anyway 
+ *                            visible or count and cluster them anyway
  *     'styles': (Array) An array of objects with these properties:
  *       'url': (string) The image url.
  *       'height': (number) The image height.
@@ -65,6 +65,11 @@
  *                           each cluster
  *     'onMouseoutCluster': (function) The event handler used for onmouseout
  *                          each cluster
+ *     'drawCluster': (function) Custom draw method for ClusterIcon
+ *     'hideCluster': (function) Custom hide method for ClusterIcon
+ *     'showCluster': (function) Custom hide method for ClusterIcon
+ *     'onAddCluster': (function) Custom onAdd method for ClusterIcon
+ *     'onRemoveCluster': (function) Custom onRemove method for ClusterIcon
  * @constructor
  * @extends google.maps.OverlayView
  */
@@ -112,7 +117,7 @@ function MarkerClusterer(map, opt_markers, opt_options) {
 
     /**
      * @private
-     * @type {string} Set a default Cluster Class 
+     * @type {string} Set a default Cluster Class
      */
     this.cssDefaultClass_ = 'cluster';
 
@@ -201,6 +206,36 @@ function MarkerClusterer(map, opt_markers, opt_options) {
      * @private
      */
     this.onMouseoutCluster_ = options['onMouseoutCluster'];
+
+    /**
+     * @type {function}
+     * @private
+     */
+    this.drawCluster_ = options['drawCluster'];
+
+    /**
+     * @type {function}
+     * @private
+     */
+    this.hideCluster_ = options['hideCluster'];
+
+    /**
+     * @type {function}
+     * @private
+     */
+    this.showCluster_ = options['showCluster'];
+
+    /**
+     * @type {function}
+     * @private
+     */
+    this.onAddCluster_ = options['onAddCluster'];
+
+    /**
+     * @type {function}
+     * @private
+     */
+    this.onRemoveCluster_ = options['onRemoveCluster'];
 
     this.setupStyles_();
 
@@ -403,9 +438,9 @@ MarkerClusterer.prototype.getMaxZoom = function() {
 
 /**
  * Gets marker's cluster object based on given marker
- * 
+ *
  * @param  {google.maps.Marker} marker
- * 
+ *
  * @return {Cluster}
  */
 MarkerClusterer.prototype.getMarkersCluster = function(marker) {
@@ -612,6 +647,16 @@ MarkerClusterer.prototype.setReady_ = function(ready) {
  */
 MarkerClusterer.prototype.getTotalClusters = function() {
     return this.clusters_.length;
+};
+
+
+/**
+ *  Returns the list of clusters in the clusterer
+ *
+ *  @return {Array.<Cluster>} The list of clusters.
+ */
+MarkerClusterer.prototype.getClusters = function() {
+    return this.clusters_;
 };
 
 
@@ -1173,64 +1218,73 @@ ClusterIcon.prototype.triggerClusterMouseout = function(event) {
  * Adding the cluster icon to the dom.
  * @ignore
  */
-ClusterIcon.prototype.onAdd = function() {
-    // Creating DOM Element only if visible, otherwise an empty div will be rendered.
-    if (this.visible_) {
-        this.div_ = document.createElement('DIV');
-
-        var pos = this.getPosFromLatLng_(this.center_);
-
-        this.div_.style.cssText = this.createCss(pos);
-        this.div_.innerHTML = this.sums_.text;
-
-        var markerClusterer = this.cluster_.getMarkerClusterer();
-
-        if (markerClusterer.cssClass_) {
-            this.div_.className = markerClusterer.cssClass_ + ' ' + markerClusterer.cssDefaultClass_ + this.setIndex_;
-        } else {
-            this.div_.className = markerClusterer.cssDefaultClass_ + this.setIndex_;
-        }
-
-        var panes = this.getPanes();
-
-        panes.overlayMouseTarget.appendChild(this.div_);
-
-        var that = this;
-        var isDragging = false;
-        var isMouseDown = false;
-
-        google.maps.event.addDomListener(this.div_, 'click', function(event) {
-            // Only perform click when not preceded by a drag
-            if (!isDragging) {
-                that.triggerClusterClick(event);
-            }
-        });
-
-        google.maps.event.addDomListener(this.div_, 'mousedown', function() {
-            isDragging = false;
-            isMouseDown = true;
-        });
-
-        google.maps.event.addDomListener(this.div_, 'mouseup', function() {
-            isDragging = false;
-            isMouseDown = false;
-        });
-
-        google.maps.event.addDomListener(this.div_, 'mousemove', function() {
-            if (isMouseDown) {
-                isDragging = true;
-            }
-        });
-
-        google.maps.event.addDomListener(this.div_, 'mouseover', function(event) {
-            that.triggerClusterMouseover(event);
-        });
-
-        google.maps.event.addDomListener(this.div_, 'mouseout', function(event) {
-            that.triggerClusterMouseout(event);
-        });
+ClusterIcon.prototype.onAdd = function () {
+    if (typeof this.cluster_.markerClusterer_.onAddCluster_ === 'function') {
+        this.cluster_.markerClusterer_.onAddCluster_(this);
+    }
+    else {
+        defaultClusterOnAdd(this);
     }
 };
+
+/**
+ * Default onAdd function
+ * @ignore
+ */
+function defaultClusterOnAdd(clusterIcon) {
+    // Creating DOM Element only if visible, otherwise an empty div will be rendered.
+    if (clusterIcon.visible_) {
+        clusterIcon.div_ = document.createElement('DIV');
+        var pos = clusterIcon.getPosFromLatLng_(clusterIcon.center_);
+        clusterIcon.div_.style.cssText = clusterIcon.createCss(pos);
+        clusterIcon.div_.innerHTML = clusterIcon.sums_.text;
+        var markerClusterer = clusterIcon.cluster_.getMarkerClusterer();
+
+        if (markerClusterer.cssClass_) {
+            clusterIcon.div_.className = markerClusterer.cssClass_ + ' ' + markerClusterer.cssDefaultClass_ + clusterIcon.setIndex_;
+        } else {
+            clusterIcon.div_.className = markerClusterer.cssDefaultClass_ + clusterIcon.setIndex_;
+        }
+    }
+
+    var panes = clusterIcon.getPanes();
+
+    panes.overlayMouseTarget.appendChild(clusterIcon.div_);
+
+    var isDragging = false;
+    var isMouseDown = false;
+
+    google.maps.event.addDomListener(clusterIcon.div_, 'click', function(event) {
+        // Only perform click when not preceded by a drag
+        if (!isDragging) {
+            clusterIcon.triggerClusterClick(event);
+        }
+    });
+
+    google.maps.event.addDomListener(clusterIcon.div_, 'mousedown', function() {
+        isDragging = false;
+        isMouseDown = true;
+    });
+
+    google.maps.event.addDomListener(clusterIcon.div_, 'mouseup', function() {
+        isDragging = false;
+        isMouseDown = false;
+    });
+
+    google.maps.event.addDomListener(clusterIcon.div_, 'mousemove', function() {
+        if (isMouseDown) {
+            isDragging = true;
+        }
+    });
+
+    google.maps.event.addDomListener(clusterIcon.div_, 'mouseover', function(event) {
+        clusterIcon.triggerClusterMouseover(event);
+    });
+
+    google.maps.event.addDomListener(clusterIcon.div_, 'mouseout', function(event) {
+        clusterIcon.triggerClusterMouseout(event);
+    });
+}
 
 /**
  * Returns the position to place the div dending on the latlng.
@@ -1257,37 +1311,77 @@ ClusterIcon.prototype.getPosFromLatLng_ = function(latlng) {
  * Draw the icon.
  * @ignore
  */
-ClusterIcon.prototype.draw = function() {
-    if (this.visible_) {
-        var pos = this.getPosFromLatLng_(this.center_);
-        this.div_.style.top = pos.y + 'px';
-        this.div_.style.left = pos.x + 'px';
+ClusterIcon.prototype.draw = function () {
+    if (typeof this.cluster_.markerClusterer_.drawCluster_ === 'function') {
+        this.cluster_.markerClusterer_.drawCluster_(this);
+    }
+    else {
+        defaultClusterDraw(this);
     }
 };
+
+/**
+ * Default draw function
+ * @ignore
+ */
+function defaultClusterDraw(clusterIcon) {
+    if (clusterIcon.visible_) {
+        var pos = clusterIcon.getPosFromLatLng_(clusterIcon.center_);
+        clusterIcon.div_.style.top = pos.y + 'px';
+        clusterIcon.div_.style.left = pos.x + 'px';
+    }
+}
 
 
 /**
  * Hide the icon.
  */
 ClusterIcon.prototype.hide = function() {
-    if (this.div_) {
-        this.div_.style.display = 'none';
+    if (typeof this.cluster_.markerClusterer_.hideCluster_ === 'function') {
+        this.cluster_.markerClusterer_.hideCluster_(this);
     }
-    this.visible_ = false;
+    else {
+        defaultClusterHide(this);
+    }
 };
+
+
+/**
+ * Default hide function
+ * @ignore
+ */
+function defaultClusterHide(clusterIcon) {
+    if (clusterIcon.div_) {
+        clusterIcon.div_.style.display = 'none';
+    }
+    clusterIcon.visible_ = false;
+}
 
 
 /**
  * Position and show the icon.
  */
 ClusterIcon.prototype.show = function() {
-    if (this.div_) {
-        var pos = this.getPosFromLatLng_(this.center_);
-        this.div_.style.cssText = this.createCss(pos);
-        this.div_.style.display = '';
+    if (typeof this.cluster_.markerClusterer_.showCluster_ === 'function') {
+        this.cluster_.markerClusterer_.showCluster_(this);
     }
-    this.visible_ = true;
+    else {
+        defaultClusterShow(this);
+    }
 };
+
+/**
+ * Default show function
+ * @ignore
+ */
+function defaultClusterShow(clusterIcon) {
+    if (clusterIcon.div_) {
+        var pos = clusterIcon.getPosFromLatLng_(clusterIcon.center_);
+        clusterIcon.div_.style.cssText = clusterIcon.createCss(pos);
+        clusterIcon.div_.style.display = '';
+    }
+    clusterIcon.visible_ = true;
+}
 
 
 /**
@@ -1303,12 +1397,25 @@ ClusterIcon.prototype.remove = function() {
  * @ignore
  */
 ClusterIcon.prototype.onRemove = function() {
-    if (this.div_ && this.div_.parentNode) {
-        this.hide();
-        this.div_.parentNode.removeChild(this.div_);
-        this.div_ = null;
+    if (typeof this.cluster_.markerClusterer_.onRemoveCluster_ === 'function') {
+        this.cluster_.markerClusterer_.onRemoveCluster_(this);
+    }
+    else {
+        defaultClusterOnRemove(this);
     }
 };
+
+/**
+ * Default onRemove function
+ * @ignore
+ */
+function defaultClusterOnRemove(clusterIcon) {
+    if (clusterIcon.div_ && clusterIcon.div_.parentNode) {
+        clusterIcon.hide();
+        clusterIcon.div_.parentNode.removeChild(clusterIcon.div_);
+        clusterIcon.div_ = null;
+    }
+}
 
 
 /**
