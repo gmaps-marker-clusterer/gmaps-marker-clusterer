@@ -1237,13 +1237,7 @@ function defaultClusterOnAdd(clusterIcon) {
         var pos = clusterIcon.getPosFromLatLng_(clusterIcon.center_);
         clusterIcon.div_.style.cssText = clusterIcon.createCss(pos);
         clusterIcon.div_.innerHTML = clusterIcon.sums_.text;
-        var markerClusterer = clusterIcon.cluster_.getMarkerClusterer();
-
-        if (markerClusterer.cssClass_) {
-            clusterIcon.div_.className = markerClusterer.cssClass_ + ' ' + markerClusterer.cssDefaultClass_ + clusterIcon.setIndex_;
-        } else {
-            clusterIcon.div_.className = markerClusterer.cssDefaultClass_ + clusterIcon.setIndex_;
-        }
+        clusterIcon.addClass();
     }
 
     var panes = clusterIcon.getPanes();
@@ -1352,6 +1346,7 @@ ClusterIcon.prototype.hide = function() {
 function defaultClusterHide(clusterIcon) {
     if (clusterIcon.div_) {
         clusterIcon.div_.style.display = 'none';
+        clusterIcon.div_.className = '';
     }
     clusterIcon.visible_ = false;
 }
@@ -1378,6 +1373,7 @@ function defaultClusterShow(clusterIcon) {
         var pos = clusterIcon.getPosFromLatLng_(clusterIcon.center_);
         clusterIcon.div_.style.cssText = clusterIcon.createCss(pos);
         clusterIcon.div_.style.display = '';
+        clusterIcon.addClass();
     }
     clusterIcon.visible_ = true;
 }
@@ -1518,6 +1514,20 @@ ClusterIcon.prototype.createCss = function(pos) {
 
     return style.join('');
 };
+
+/**
+ * Set the class for the cluster icon
+ * @ignore
+ */
+ClusterIcon.prototype.addClass = function() {
+    var markerClusterer = this.cluster_.getMarkerClusterer();
+
+    if (markerClusterer.cssClass_) {
+        this.div_.className = markerClusterer.cssClass_ + ' ' + markerClusterer.cssDefaultClass_ + this.setIndex_;
+    } else {
+        this.div_.className = markerClusterer.cssDefaultClass_ + this.setIndex_;
+    }
+}
 
 
 // Export Symbols for Closure
