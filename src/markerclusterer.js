@@ -61,6 +61,8 @@
  *       'backgroundPosition': (string) The position of the backgound x, y.
  *       'iconAnchor': (Array) The anchor position of the icon x, y.
  *       'cssClass': (string) One or more CSS class for styling this marker.
+ *     'customStyles': (Array) An array of strings representing custom styles to 
+ *                     append to the ClusterIcon
  *     'onMouseoverCluster': (function) The event handler used for onmouseover
  *                           each cluster
  *     'onMouseoutCluster': (function) The event handler used for onmouseout
@@ -158,6 +160,8 @@ function MarkerClusterer(map, opt_markers, opt_options) {
     this.maxZoom_ = options['maxZoom'] || null;
 
     this.styles_ = options['styles'] || [];
+
+    this.customStyles_ = options['customStyles'] || [];
 
     this.cssClass_ = options['cssClass'] || null;
 
@@ -375,6 +379,25 @@ MarkerClusterer.prototype.setStyles = function(styles) {
  */
 MarkerClusterer.prototype.getStyles = function() {
     return this.styles_;
+};
+
+/**
+ *  Sets the custom styles to be used in the cluster icon.
+ *
+ *  @param {Object} styles The style to set.
+ */
+MarkerClusterer.prototype.setCustomStyles = function(customStyles) {
+    this.customStyles_ = customStyles;
+};
+
+
+/**
+ *  Gets the custom styles used in the cluster icon.
+ *
+ *  @return {Object} The styles object.
+ */
+MarkerClusterer.prototype.getCustomStyles = function() {
+    return this.customStyles_;
 };
 
 
@@ -1510,6 +1533,10 @@ ClusterIcon.prototype.createCss = function(pos) {
 
     } else {
         style.push('top:' + pos.y + 'px; left:' + pos.x + 'px;');
+        var customStyles = markerClusterer.getCustomStyles();
+        if (customStyles.length) {
+            style = style.concat(customStyles);
+        }
     }
 
     return style.join('');
