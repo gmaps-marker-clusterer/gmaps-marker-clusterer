@@ -5,7 +5,8 @@
   "main": "src/markerclusterer.js",
   "directories": {
     "doc": "docs",
-    "example": "examples"
+    "example": "examples",
+    "lib": "src"
   },
   "repository": {
     "type": "git",
@@ -21,10 +22,31 @@
     "api",
     "v3"
   ],
-  "author": "Luke Mahe",
+  "scripts": {
+    "uglify": "uglifyjs src/markerclusterer.js -o dist/markerclusterer.min.js -c -m --verbose --source-map \"filename='markerclusterer.min.js.map',root='../',url='markerclusterer.min.js.map'\"",
+    "prepublishOnly": "npm run uglify"
+  },
+  "contributors": [
+    {
+      "name": "Luke Mahe"
+    },
+    {
+      "name": "Sebastian Hösl",
+      "email": "sebastian.codes@gmail.com"
+    }
+  ],
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/gmaps-marker-clusterer/gmaps-marker-clusterer/issues"
   },
-  "homepage": "https://github.com/gmaps-marker-clusterer/gmaps-marker-clusterer#readme"
+  "homepage": "https://github.com/gmaps-marker-clusterer/gmaps-marker-clusterer#readme",
+  "devDependencies": {
+    "uglify-js": "^3.1.5",
+    "copy": "^0.3.1"
+  },
+  "files": [
+    "./src/markerclusterer.js",
+    "./dist/markerclusterer.min.js",
+    "./dist/markerclusterer.min.js.map"
+  ]
 }
