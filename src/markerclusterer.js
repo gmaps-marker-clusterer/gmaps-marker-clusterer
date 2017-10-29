@@ -60,7 +60,7 @@
  *       'textSize': (number) The text size.
  *       'backgroundPosition': (string) The position of the backgound x, y.
  *       'iconAnchor': (Array) The anchor position of the icon x, y.
- *       'cssClass': (string) One or more CSS class for styling this marker.
+ *     'cssClass': (string) One or more CSS class for styling this marker.
  *     'onMouseoverCluster': (function) The event handler used for onmouseover
  *                           each cluster
  *     'onMouseoutCluster': (function) The event handler used for onmouseout
