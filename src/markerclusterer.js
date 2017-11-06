@@ -58,6 +58,8 @@
  *       'anchor': (Array) The anchor position of the label text.
  *       'textColor': (string) The text color.
  *       'textSize': (number) The text size.
+ *       'fontFamily': (string) The text font family.
+ *       'fontWeight': (string) The text font weight.
  *       'backgroundPosition': (string) The position of the backgound x, y.
  *       'iconAnchor': (Array) The anchor position of the icon x, y.
  *     'cssClass': (string) One or more CSS class for styling this marker.
@@ -1445,6 +1447,8 @@ ClusterIcon.prototype.useStyle = function() {
     this.textColor_ = style['textColor'];
     this.anchor_ = style['anchor'];
     this.textSize_ = style['textSize'];
+    this.fontFamily_ = style['fontFamily'];
+    this.fontWeight_ = style['fontWeight'];
     this.backgroundPosition_ = style['backgroundPosition'];
     this.iconAnchor_ = style['iconAnchor'];
     this.setIndex_ = index;
@@ -1503,10 +1507,12 @@ ClusterIcon.prototype.createCss = function(pos) {
 
         var txtColor = this.textColor_ ? this.textColor_ : 'black';
         var txtSize = this.textSize_ ? this.textSize_ : 11;
+        var fontFamily = this.fontFamily_ ? this.fontFamily_ : "Arial,sans-serif";
+        var fontWeight = this.fontWeight_ ? this.fontWeight_ : "bold";
 
         style.push('cursor:pointer; top:' + pos.y + 'px; left:' +
             pos.x + 'px; color:' + txtColor + '; position:absolute; font-size:' +
-            txtSize + 'px; font-family:Arial,sans-serif; font-weight:bold');
+            txtSize + 'px; font-family:' + fontFamily + '; font-weight:' + fontWeight);
 
     } else {
         style.push('top:' + pos.y + 'px; left:' + pos.x + 'px;');
