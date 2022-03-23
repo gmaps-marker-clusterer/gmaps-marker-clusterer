@@ -62,7 +62,10 @@
  *       'fontWeight': (string) The text font weight.
  *       'backgroundPosition': (string) The position of the backgound x, y.
  *       'iconAnchor': (Array) The anchor position of the icon x, y.
+ *     'title': (string) One or more title for this marker.
  *     'cssClass': (string) One or more CSS class for styling this marker.
+ *     'label': (string) One label this marker.
+ *     'tabindex': (string) One tabindex this marker.
  *     'onMouseoverCluster': (function) The event handler used for onmouseover
  *                           each cluster
  *     'onMouseoutCluster': (function) The event handler used for onmouseout
@@ -119,6 +122,16 @@ function MarkerClusterer(map, opt_markers, opt_options) {
 
     /**
      * @private
+     */
+    this.title_ = '';
+
+     /**
+     * @private
+     */
+    this.label_ = '';
+
+    /**
+     * @private
      * @type {string} Set a default Cluster Class
      */
     this.cssDefaultClass_ = 'cluster';
@@ -162,6 +175,12 @@ function MarkerClusterer(map, opt_markers, opt_options) {
     this.styles_ = options['styles'] || [];
 
     this.cssClass_ = options['cssClass'] || null;
+
+    this.title_ = options['title'] || null;
+
+    this.label_ = options['label'] || null;
+
+    this.tabindex_ = options['tabindex'] || null;
 
     /**
      * @type {string}
@@ -1240,6 +1259,9 @@ function defaultClusterOnAdd(clusterIcon) {
         clusterIcon.div_.style.cssText = clusterIcon.createCss(pos);
         clusterIcon.div_.innerHTML = clusterIcon.sums_.text;
         clusterIcon.addClass();
+        clusterIcon.addTitle();
+        clusterIcon.addLabel();
+        clusterIcon.addTabIndex();
     }
 
     var panes = clusterIcon.getPanes();
@@ -1349,6 +1371,7 @@ function defaultClusterHide(clusterIcon) {
     if (clusterIcon.div_) {
         clusterIcon.div_.style.display = 'none';
         clusterIcon.div_.className = '';
+        clusterIcon.div_.titleName = '';
     }
     clusterIcon.visible_ = false;
 }
@@ -1376,6 +1399,9 @@ function defaultClusterShow(clusterIcon) {
         clusterIcon.div_.style.cssText = clusterIcon.createCss(pos);
         clusterIcon.div_.style.display = '';
         clusterIcon.addClass();
+        clusterIcon.addTitle();
+        clusterIcon.addLabel();
+        clusterIcon.addTabIndex();
     }
     clusterIcon.visible_ = true;
 }
@@ -1535,6 +1561,44 @@ ClusterIcon.prototype.addClass = function() {
     }
 }
 
+/**
+ * Set the title for the cluster icon
+ * @ignore
+ */
+ClusterIcon.prototype.addTitle = function() {
+    var markerClusterer = this.cluster_.getMarkerClusterer();
+
+    if (markerClusterer.title_) {
+        this.div_.title = markerClusterer.title_;
+    }
+
+}
+
+/**
+ * Set the title for the cluster icon
+ * @ignore
+ */
+ClusterIcon.prototype.addTabIndex = function() {
+    var markerClusterer = this.cluster_.getMarkerClusterer();
+
+    if (markerClusterer.tabindex_) {
+        this.div_.setAttribute('tabindex', markerClusterer.tabindex_)
+    }
+
+}
+
+/**
+ * Set the add-label for the cluster icon
+ * @ignore
+ */
+ClusterIcon.prototype.addLabel = function() {
+    var markerClusterer = this.cluster_.getMarkerClusterer();
+
+    if (markerClusterer.label_) {
+        this.div_.setAttribute('aria-label', markerClusterer.label_)
+    }
+
+}
 
 // Export Symbols for Closure
 // If you are not going to compile with closure then you can remove the
